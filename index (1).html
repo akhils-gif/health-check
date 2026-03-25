@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruitment Pipeline Health Check — Ceipal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --white: #ffffff;
+    --ink: #0d0d0d;
+    --muted: #787878;
+    --light: #e5e2d8;
+    --accent: #2246f5;
+    --accent-dark: #1535d4;
+    --accent-glow: rgba(34,70,245,0.12);
+    --accent-light: #edf0ff;
+    --green: #0a6e42;
+    --green-light: #e3f5ed;
+    --amber: #a14b00;
+    --amber-light: #fef0dc;
+    --red: #b01c1c;
+    --red-light: #fef0f0;
+    --border: #e0ddd4;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --card-shadow-hover: 0 8px 40px rgba(0,0,0,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── HERO ─────────────────────────────────── */
+  .hero {
+    background: var(--ink);
+    color: white;
+    padding: 80px 40px 70px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(34,70,245,0.25) 0%, transparent 70%);
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .hero-content { position: relative; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px;
+    padding: 6px 16px 6px 10px;
+    margin-bottom: 28px;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero-badge-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 7vw, 72px);
+    font-weight: 400;
+    line-height: 1.08;
+    margin-bottom: 22px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .hero h1 .accent-word {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero h1 .accent-word::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.5);
+    max-width: 500px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .hero-pills {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hero-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 7px 16px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .pill-icon { font-size: 13px; }
+
+  /* ─── PROGRESS BAR ─────────────────────────── */
+  .progress-bar-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 5px;
+    background: var(--light);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #6b8fff);
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -1px; top: -1px; bottom: -1px;
+    width: 8px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .progress-fill.active::after { opacity: 1; }
+
+  .progress-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ─── MAIN ──────────────────────────────────── */
+  .main {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 56px 24px 100px;
+  }
+
+  .section-intro {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 28px 32px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .section-intro-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .section-intro-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ─── QUESTION CARDS ────────────────────────── */
+  .question-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 30px 28px;
+    margin-bottom: 14px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    box-shadow: var(--card-shadow);
+  }
+
+  .question-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-1px);
+  }
+
+  .question-card.answered {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-glow), var(--card-shadow);
+  }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .q-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 44px;
+  }
+
+  .q-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--light);
+    font-weight: 400;
+    transition: color 0.25s;
+  }
+
+  .question-card.answered .q-num { color: var(--accent-light); }
+
+  .q-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+    font-size: 11px;
+    color: white;
+  }
+
+  .question-card.answered .q-check { display: flex; }
+
+  .q-text {
+    font-size: 15.5px;
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.5;
+    padding-top: 6px;
+  }
+
+  .q-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 5px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ─── OPTIONS ────────────────────────────────── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+    background: var(--bg);
+  }
+
+  .option:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    transform: translateX(2px);
+  }
+
+  .option.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .option-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+  }
+
+  .option:hover .option-dot { border-color: var(--accent); }
+
+  .option.selected .option-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .option.selected .option-dot::after {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .option-text {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 400;
+    flex: 1;
+  }
+
+  .option.selected .option-text { font-weight: 500; color: var(--accent-dark); }
+
+  .option-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: white;
+  }
+
+  .option[data-score="2"] .option-badge { color: var(--green); border-color: #b7e0cd; background: var(--green-light); }
+  .option[data-score="1"] .option-badge { color: var(--amber); border-color: #fcd79a; background: var(--amber-light); }
+  .option[data-score="0"] .option-badge { color: var(--red); border-color: #fecaca; background: var(--red-light); }
+
+  /* ─── SUBMIT ─────────────────────────────────── */
+  .submit-wrap {
+    text-align: center;
+    padding: 28px 0 48px;
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent), #4b6fff);
+    color: white;
+    border: none;
+    padding: 18px 56px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 20px rgba(34,70,245,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(34,70,245,0.4);
+  }
+
+  .submit-btn:hover::before { opacity: 1; }
+  .submit-btn:disabled { background: var(--light); color: var(--muted); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .submit-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── RESULTS ────────────────────────────────── */
+  .results {
+    display: none;
+    animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .score-hero {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 56px 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .score-hero-glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .score-hero-content { position: relative; }
+
+  .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 18px;
+  }
+
+  .score-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.1);
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .score-ring::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--accent);
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .score-inner { text-align: center; }
+
+  .score-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    line-height: 1;
+    font-weight: 400;
+    display: block;
+  }
+
+  .score-out-of {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .score-verdict {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+
+  .score-desc {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ─── BREAKDOWN ──────────────────────────────── */
+  .breakdown-section {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .breakdown-header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg);
+  }
+
+  .breakdown-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 28px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .breakdown-item:last-child { border-bottom: none; }
+  .breakdown-item:hover { background: var(--bg); }
+
+  .breakdown-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--light);
+    min-width: 24px;
+    font-weight: 400;
+  }
+
+  .breakdown-q {
+    flex: 1;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .breakdown-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 11px;
+    border-radius: 100px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .score-high { background: var(--green-light); color: var(--green); border-color: #b7e0cd; }
+  .score-mid { background: var(--amber-light); color: var(--amber); border-color: #fcd79a; }
+  .score-low { background: var(--red-light); color: var(--red); border-color: #fecaca; }
+
+  /* ─── CTA BOX ────────────────────────────────── */
+  .cta-box {
+    border-radius: 16px;
+    padding: 44px 40px;
+    text-align: center;
+    margin-top: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+
+  .cta-box.green-cta { background: var(--green-light); border: 1.5px solid #b7e0cd; }
+  .cta-box.green-cta::before { background: var(--green); }
+  .cta-box.amber-cta { background: var(--amber-light); border: 1.5px solid #fcd79a; }
+  .cta-box.amber-cta::before { background: var(--amber); }
+  .cta-box.red-cta { background: var(--red-light); border: 1.5px solid #fecaca; }
+  .cta-box.red-cta::before { background: var(--red); }
+
+  .cta-icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+    display: block;
+    position: relative;
+  }
+
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 27px;
+    margin-bottom: 13px;
+    font-weight: 400;
+    line-height: 1.3;
+    position: relative;
+  }
+
+  .cta-text {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.75;
+    position: relative;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--ink);
+    color: white;
+    padding: 16px 40px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  .cta-btn:hover {
+    background: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+
+  .cta-btn-arrow {
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+
+  .cta-btn:hover .cta-btn-arrow { transform: translateX(4px); }
+
+  .cta-trust {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    position: relative;
+  }
+
+  /* ─── RESTART ────────────────────────────────── */
+  .restart-btn {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    padding: 11px 28px;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    margin: 20px auto 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .restart-btn:hover { border-color: var(--ink); color: var(--ink); background: white; }
+
+  /* ─── FOOTER ─────────────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 36px 40px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    background: white;
+  }
+
+  .footer a { color: var(--muted); text-decoration: none; }
+  .footer a:hover { color: var(--ink); }
+
+  /* ─── RESPONSIVE ─────────────────────────────── */
+  @media (max-width: 600px) {
+    .hero { padding: 56px 20px 48px; }
+    .progress-bar-wrap { padding: 12px 16px; }
+    .main { padding: 36px 16px 80px; }
+    .question-card { padding: 22px 18px; }
+    .score-hero { padding: 40px 24px; }
+    .score-number { font-size: 64px; }
+    .score-ring { width: 130px; height: 130px; }
+    .cta-box { padding: 32px 24px; }
+    .breakdown-item { padding: 14px 18px; }
+    .breakdown-header { padding: 14px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span class="hero-badge-text">Ceipal — Free Resource</span>
+    </div>
+    <h1>Recruitment Pipeline<br><em><span class="accent-word">Health Check</span></em></h1>
+    <p class="hero-sub">10 questions. 5 minutes. See exactly where your hiring process is leaking candidates — and what to fix first.</p>
+    <div class="hero-pills">
+      <span class="hero-pill"><span class="pill-icon">📋</span>10 Questions</span>
+      <span class="hero-pill"><span class="pill-icon">⏱</span>5 Minutes</span>
+      <span class="hero-pill"><span class="pill-icon">⚡</span>Instant Score</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <span class="progress-label">Progress</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <span class="progress-count" id="progressCount">0 / 10</span>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- QUIZ -->
+  <div id="quiz">
+
+    <div class="section-intro">
+      <div class="section-intro-label">Instructions</div>
+      <div class="section-intro-text">Select the answer that best describes your team's current reality. Be honest — your score is only useful if it reflects the truth.</div>
+    </div>
+
+    <div class="question-card" data-q="1">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">1</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Do you know your candidate drop-off rate at each hiring stage?</div>
+          <div class="q-sub">Can you tell where candidates are exiting your funnel?</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 1)"><div class="option-dot"></div><span class="option-text">Yes — we track it in real time and review it weekly</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 1)"><div class="option-dot"></div><span class="option-text">Roughly — we have a sense but nothing formal</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 1)"><div class="option-dot"></div><span class="option-text">No — we don't track this at all</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="2">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">2</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Can your recruiters see every open role and candidate status without asking someone else?</div>
+          <div class="q-sub">One view — no Slack messages, no manual checks needed.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 2)"><div class="option-dot"></div><span class="option-text">Yes — full pipeline visibility in one place</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 2)"><div class="option-dot"></div><span class="option-text">Partially — some roles yes, others require follow-up</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 2)"><div class="option-dot"></div><span class="option-text">No — we're constantly chasing updates</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="3">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">3</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">How many tools does your team switch between to fill a single role?</div>
+          <div class="q-sub">Count sourcing, ATS, scheduling, communication, onboarding.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 3)"><div class="option-dot"></div><span class="option-text">1–2 tools — mostly consolidated</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 3)"><div class="option-dot"></div><span class="option-text">3 tools — manageable but not ideal</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 3)"><div class="option-dot"></div><span class="option-text">4 or more — constant context switching</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="4">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">4</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Do you have automated follow-up when a candidate goes dark between stages?</div>
+          <div class="q-sub">Candidates often ghost when follow-up is slow or manual.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 4)"><div class="option-dot"></div><span class="option-text">Yes — automated sequences are running</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 4)"><div class="option-dot"></div><span class="option-text">Sometimes — depends on the recruiter remembering</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 4)"><div class="option-dot"></div><span class="option-text">No — candidates go quiet and we lose them</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="5">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">5</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Do you know your current average time-to-fill by role type?</div>
+          <div class="q-sub">Not a rough guess — an actual tracked number.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 5)"><div class="option-dot"></div><span class="option-text">Yes — tracked, reviewed, and benchmarked</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 5)"><div class="option-dot"></div><span class="option-text">Roughly — I have a general idea</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 5)"><div class="option-dot"></div><span class="option-text">No — we don't measure this consistently</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="6">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">6</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">How quickly do hiring managers give interview feedback after a candidate meets them?</div>
+          <div class="q-sub">Slow feedback is one of the top reasons candidates accept other offers.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 6)"><div class="option-dot"></div><span class="option-text">Within 24 hours — there's a clear process</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 6)"><div class="option-dot"></div><span class="option-text">2–3 days — we chase but it varies</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 6)"><div class="option-dot"></div><span class="option-text">A week or more — it's a constant problem</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="7">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">7</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Can you tell which sourcing channels are delivering quality candidates vs. just volume?</div>
+          <div class="q-sub">Job boards, LinkedIn, referrals — which actually converts?</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 7)"><div class="option-dot"></div><span class="option-text">Yes — source-to-hire data is tracked</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 7)"><div class="option-dot"></div><span class="option-text">Partially — some channels but not all</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 7)"><div class="option-dot"></div><span class="option-text">No — we post everywhere and guess</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="8">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">8</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">What percentage of your recruiters' time goes to admin vs. actual recruiting?</div>
+          <div class="q-sub">Data entry, status updates, scheduling — vs. sourcing and conversations.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 8)"><div class="option-dot"></div><span class="option-text">Less than 20% on admin — mostly recruiting</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 8)"><div class="option-dot"></div><span class="option-text">Around 30–40% — it's a known issue</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 8)"><div class="option-dot"></div><span class="option-text">Over 40% — admin is eating the team alive</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="9">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">9</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">Is your onboarding process connected to your hiring pipeline, or does it start over from scratch?</div>
+          <div class="q-sub">The handoff between offer accepted and day one is where many candidates drop off.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 9)"><div class="option-dot"></div><span class="option-text">Connected — hiring flows directly into onboarding</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 9)"><div class="option-dot"></div><span class="option-text">Partially connected — some manual handoff still needed</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 9)"><div class="option-dot"></div><span class="option-text">Completely separate — starts over every time</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="10">
+      <div class="q-header">
+        <div class="q-num-wrap">
+          <div class="q-num">10</div>
+          <div class="q-check">✓</div>
+        </div>
+        <div>
+          <div class="q-text">If your top recruiter left tomorrow, would the pipeline keep running or would it collapse?</div>
+          <div class="q-sub">This reveals whether your process lives in the system or in people's heads.</div>
+        </div>
+      </div>
+      <div class="options">
+        <div class="option" data-score="2" onclick="selectOption(this, 10)"><div class="option-dot"></div><span class="option-text">The system would keep running — it's documented and automated</span><span class="option-badge">2 pts</span></div>
+        <div class="option" data-score="1" onclick="selectOption(this, 10)"><div class="option-dot"></div><span class="option-text">It would slow down but survive</span><span class="option-badge">1 pt</span></div>
+        <div class="option" data-score="0" onclick="selectOption(this, 10)"><div class="option-dot"></div><span class="option-text">It would collapse — too much lives in their head</span><span class="option-badge">0 pts</span></div>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submitBtn" disabled onclick="showResults()">See My Score</button>
+      <div class="submit-note" id="submitNote">Answer all 10 questions to unlock your results</div>
+    </div>
+
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="results">
+    <div class="score-hero">
+      <div class="score-hero-grid"></div>
+      <div class="score-hero-glow" id="scoreGlow"></div>
+      <div class="score-hero-content">
+        <div class="score-label">Your Results</div>
+        <div class="score-ring">
+          <div class="score-inner">
+            <span class="score-number" id="scoreNumber">0</span>
+            <span class="score-out-of">out of 20</span>
+          </div>
+        </div>
+        <div class="score-verdict" id="scoreVerdict"></div>
+        <div class="score-desc" id="scoreDesc"></div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-header">Question by Question Breakdown</div>
+      <div id="breakdownList"></div>
+    </div>
+
+    <div id="ctaBox"></div>
+
+    <button class="restart-btn" onclick="restartQuiz()">↺ &nbsp;Retake the assessment</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  Ceipal — Recruitment Pipeline Health Check &nbsp;·&nbsp; <a href="https://ceipal.com" target="_blank">ceipal.com</a>
+</div>
+
+<script>
+  const answers = {};
+  const questions = [
+    "Do you track candidate drop-off rate at each stage?",
+    "Can recruiters see full pipeline without asking anyone?",
+    "How many tools to fill a single role?",
+    "Do you have automated candidate follow-up?",
+    "Do you know your average time-to-fill?",
+    "How fast do hiring managers give feedback?",
+    "Can you identify quality vs volume by source?",
+    "What % of recruiter time goes to admin?",
+    "Is onboarding connected to hiring pipeline?",
+    "Would pipeline survive if top recruiter left?"
+  ];
+
+  const CALENDAR_LINK = 'https://calendar.app.google/topiNr2aLEzvcJ6s8';
+
+  function selectOption(el, qNum) {
+    const card = el.closest('.question-card');
+    card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    card.classList.add('answered');
+    answers[qNum] = parseInt(el.dataset.score);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const count = Object.keys(answers).length;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (count / 10 * 100) + '%';
+    fill.classList.toggle('active', count > 0 && count < 10);
+    document.getElementById('progressCount').textContent = count + ' / 10';
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = count < 10;
+    if (count === 10) {
+      btn.textContent = 'See My Score →';
+      document.getElementById('submitNote').textContent = 'All questions answered — ready to see your results!';
+    }
+  }
+
+  function showResults() {
+    const total = Object.values(answers).reduce((a, b) => a + b, 0);
+
+    document.getElementById('quiz').style.display = 'none';
+    const results = document.getElementById('results');
+    results.style.display = 'block';
+
+    document.getElementById('scoreNumber').textContent = total;
+
+    let verdict, desc, ctaHtml, ctaClass, glowColor, icon;
+
+    if (total >= 16) {
+      verdict = "Strong foundation.";
+      desc = "Your pipeline is well-structured. The opportunity now is optimization — squeezing more efficiency out of what's already working and scaling what's performing.";
+      ctaClass = 'green-cta';
+      icon = '🚀';
+      glowColor = 'rgba(10,110,66,0.2)';
+      ctaHtml = `
+        <span class="cta-icon">${icon}</span>
+        <div class="cta-title">Ready to scale what's working?</div>
+        <div class="cta-text">You have a solid base. Let's talk about how to go from good to exceptional — faster fills, better data, and a pipeline that runs itself.</div>
+        <button class="cta-btn" onclick="window.open('${CALENDAR_LINK}','_blank')">
+          Book a Meeting
+          <span class="cta-btn-arrow">→</span>
+        </button>
+        <div class="cta-trust">Free · 15 minutes · No commitment</div>`;
+    } else if (total >= 10) {
+      verdict = "Leaks are costing you.";
+      desc = "You have pieces in place but gaps between them. These gaps are likely costing you 3 to 5 placements per month without you realizing it.";
+      ctaClass = 'amber-cta';
+      icon = '⚠️';
+      glowColor = 'rgba(161,75,0,0.2)';
+      ctaHtml = `
+        <span class="cta-icon">${icon}</span>
+        <div class="cta-title">You're leaving placements on the table.</div>
+        <div class="cta-text">Scoring between 10 and 15 usually means the infrastructure exists but isn't connected. A 15-minute walkthrough will show you exactly where the gaps are.</div>
+        <button class="cta-btn" onclick="window.open('${CALENDAR_LINK}','_blank')">
+          Book a 15-min Call
+          <span class="cta-btn-arrow">→</span>
+        </button>
+        <div class="cta-trust">Free · 15 minutes · No commitment</div>`;
+    } else {
+      verdict = "The system is the problem.";
+      desc = "Your recruiters are working hard inside a broken process. More headcount won't fix this. The infrastructure needs to change first.";
+      ctaClass = 'red-cta';
+      icon = '🔧';
+      glowColor = 'rgba(176,28,28,0.2)';
+      ctaHtml = `
+        <span class="cta-icon">${icon}</span>
+        <div class="cta-title">You don't need more recruiters. You need a system.</div>
+        <div class="cta-text">Scoring below 10 means the process itself is the bottleneck. Ceipal was built specifically for this situation. Let's fix it together.</div>
+        <button class="cta-btn" onclick="window.open('${CALENDAR_LINK}','_blank')">
+          Let's Fix This — Book a Call
+          <span class="cta-btn-arrow">→</span>
+        </button>
+        <div class="cta-trust">Free · 15 minutes · No commitment</div>`;
+    }
+
+    document.getElementById('scoreGlow').style.background = `radial-gradient(circle, ${glowColor} 0%, transparent 70%)`;
+    document.getElementById('scoreVerdict').textContent = verdict;
+    document.getElementById('scoreDesc').textContent = desc;
+
+    const ctaBox = document.getElementById('ctaBox');
+    ctaBox.className = 'cta-box ' + ctaClass;
+    ctaBox.innerHTML = ctaHtml;
+
+    const breakdown = document.getElementById('breakdownList');
+    breakdown.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      const score = answers[i];
+      const scoreClass = score === 2 ? 'score-high' : score === 1 ? 'score-mid' : 'score-low';
+      const scoreText = score === 2 ? '2/2 — Good' : score === 1 ? '1/2 — Room to improve' : '0/2 — Needs attention';
+      breakdown.innerHTML += `
+        <div class="breakdown-item">
+          <div class="breakdown-num">${i}</div>
+          <div class="breakdown-q">${questions[i-1]}</div>
+          <span class="breakdown-score ${scoreClass}">${scoreText}</span>
+        </div>`;
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function restartQuiz() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('answered'));
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'See My Score';
+    document.getElementById('submitNote').textContent = 'Answer all 10 questions to unlock your results';
+    const fill = document.getElementById('progressFill');
+    fill.style.width = '0%';
+    fill.classList.remove('active');
+    document.getElementById('progressCount').textContent = '0 / 10';
+    document.getElementById('quiz').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
